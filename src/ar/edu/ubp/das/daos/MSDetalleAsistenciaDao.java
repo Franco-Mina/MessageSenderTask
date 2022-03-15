@@ -1,0 +1,68 @@
+package ar.edu.ubp.das.daos;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import ar.edu.ubp.das.bean.DetalleAsistenciaBean;
+import ar.edu.ubp.das.db.Dao;
+
+public class MSDetalleAsistenciaDao extends Dao<DetalleAsistenciaBean, DetalleAsistenciaBean> {
+
+	@Override
+	public DetalleAsistenciaBean delete(DetalleAsistenciaBean arg0) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DetalleAsistenciaBean insert(DetalleAsistenciaBean bean) throws SQLException {
+
+		this.setProcedure("dbo.INSERTAR_MENSAJE(?,?,?)");
+		this.setParameter(1, bean.getIdAsistencia());
+		this.setParameter(2, bean.getTipoDato());
+		this.setParameter(3, bean.getFechaCreacion());		
+		boolean finalizado = bean.getFinalizado() != null && bean.getFinalizado().booleanValue();
+		this.setParameter(4, (finalizado ? 1 : 0));
+		
+		this.executeUpdate();
+		
+		return bean;
+		
+	}
+
+	@Override
+	public DetalleAsistenciaBean make(ResultSet arg0) throws SQLException {
+		DetalleAsistenciaBean bean = new DetalleAsistenciaBean();
+		
+		bean.setId(arg0.getInt("Id"));
+		bean.setIdAsistencia(arg0.getString("Id_Solicitud"));
+		bean.setTipoDato(arg0.getString("Tipo_Dato"));
+		bean.setFechaCreacion(arg0.getTimestamp("Fecha_Creacion"));
+		bean.setFechaEnvio(arg0.getTimestamp("Fecha_Envio"));
+		bean.setDato(arg0.getString("Dato"));
+		bean.setIdServicio(arg0.getString("Id_Servicio"));
+		
+		return bean;
+	}
+
+	@Override
+	public List<DetalleAsistenciaBean> select(DetalleAsistenciaBean arg0) throws SQLException {
+		this.setProcedure("dbo.GetDetalleAsistencia()");
+		
+		return this.executeQuery();
+	}
+
+	@Override
+	public DetalleAsistenciaBean update(DetalleAsistenciaBean arg0) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean valid(DetalleAsistenciaBean arg0) throws SQLException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}
