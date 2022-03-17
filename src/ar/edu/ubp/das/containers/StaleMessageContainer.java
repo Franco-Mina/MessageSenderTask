@@ -10,9 +10,10 @@ import com.google.gson.Gson;
 import ar.edu.ubp.das.bean.DetalleAsistenciaBean;
 import ar.edu.ubp.das.db.Dao;
 import ar.edu.ubp.das.db.DaoFactory;
+import ar.edu.ubp.das.interfaces.IMessageContainer;
 import ar.edu.ubp.das.logger.Logger;
 
-public class StaleMessageContainer {
+public class StaleMessageContainer implements IMessageContainer {
 	/*
 	 * Este contenedor se usa para marcar los chats que hay que fueron terminados desde el servicio de asistencia
 	 * y notificar a los servicios de asistencia los chats terminados que no se notifico el fin del chat
