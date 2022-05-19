@@ -13,7 +13,7 @@ import ar.edu.ubp.das.db.DaoFactory;
 import ar.edu.ubp.das.interfaces.IMessageContainer;
 import ar.edu.ubp.das.logger.Logger;
 
-public class NewMessageContainer implements IMessageContainer {
+public class MessageContainer implements IMessageContainer {
 	/*
 	 * Este contenedor se usa para obtener y guardar los mensajes del chat
 	 * entre los usuarios y los servicios de asistencia
@@ -26,7 +26,7 @@ public class NewMessageContainer implements IMessageContainer {
 		List<DetalleAsistenciaBean> listaMensajes = new ArrayList<DetalleAsistenciaBean>();
 		
 		try {
-			Dao<DetalleAsistenciaBean, DetalleAsistenciaBean> dao = DaoFactory.getDao("DetalleAsistencia", "ar.edu.das.daos",
+			Dao<DetalleAsistenciaBean, DetalleAsistenciaBean> dao = DaoFactory.getDao("DetalleAsistencia", "ar.edu.ubp.das",
 					"com.microsoft.sqlserver.jdbc.SQLServerDriver", this.cadenaConexion, "MS");
 			
 			listaMensajes = dao.select(null);

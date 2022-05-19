@@ -20,6 +20,7 @@ public class MessageManager {
 	private final String usuario        = "sa";
 	private final String password       = "Francomina1";
 	private final String logPath        = "c:/Logger/MessageSender/";
+	private final String pathConexiones = "src/ar/edu/ubp/das/manager/conexiones.xml";
 	private IMessageContainer contenedorDeMensajes;
 	
 	public MessageManager(IMessageContainer contenedor) {
@@ -34,9 +35,9 @@ public class MessageManager {
 			Map<String, List<DetalleAsistenciaBean>> mensajesPorEntidad = 
 					listaMensajes.stream().collect(
 							Collectors.groupingBy(DetalleAsistenciaBean::getIdServicio));
-			//Llamar por entidad
 			
-			ConnectionManager connectionManager = new ConnectionManager("src/ar/edu/ubp/das/manager/conexiones.xml", 
+			//Llamar por entidad			
+			ConnectionManager connectionManager = new ConnectionManager(pathConexiones, 
 					new  ConsoleTokenManger(this.cadenaConexion,this.usuario,this.password),logPath);
 			
 			Gson gson = new Gson();

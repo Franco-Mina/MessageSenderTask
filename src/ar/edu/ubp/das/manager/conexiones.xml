@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conexiones>	
+	<conexion>
+		<nro_conexion>1</nro_conexion>
+		<entidad>municipalidad</entidad>
+		<tipo>Soap</tipo>
+		<url>http://localhost:8080/MunicipalidadCxf/services/TokenPort?wsdl</url>
+		<accion>getToken</accion>
+		<req_token>false</req_token>
+		<neg_token>true</neg_token>
+		<usuario>u1</usuario>
+		<password>123</password>
+	</conexion>
+	<conexion>
+		<nro_conexion>2</nro_conexion>
+		<entidad>municipalidad</entidad>
+		<tipo>Soap</tipo>
+		<url>http://localhost:8080/MunicipalidadCxf/services/GuardarEstadisticasPort?wsdl</url>
+		<accion>guardarEstadisticas</accion>
+		<req_token>true</req_token>
+	</conexion>
+	<conexion>
+		<nro_conexion>2</nro_conexion>
+		<entidad>municipalidad</entidad>
+		<tipo>Soap</tipo>
+		<url>http://localhost:8080/MunicipalidadCxf/services/GuardarEstadisticasPort?wsdl</url>
+		<accion>guardarEstadisticas</accion>
+		<req_token>true</req_token>
+		<descripcion>CierreChat_defensa_civil</descripcion>
+	</conexion>
+</conexiones>
