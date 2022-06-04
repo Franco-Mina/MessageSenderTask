@@ -12,8 +12,9 @@ import java.util.stream.Collectors;
 import com.google.gson.Gson;
 
 import ar.edu.ubp.das.bean.AsistenciasFinalizadasBean;
-import ar.edu.ubp.das.bean.ws.CancelarChatRequestBean;
-import ar.edu.ubp.das.bean.ws.CancelarChatResponseBean;
+import ar.edu.ubp.das.bean.ServicioBean;
+import ar.edu.ubp.das.bean.ws.CerrarAsistenciaReqBean;
+import ar.edu.ubp.das.bean.ws.CerrarAsistenciaRespBean;
 import ar.edu.ubp.das.bean.ws.ListaFinalizadosRequestBean;
 import ar.edu.ubp.das.bean.ws.ListaFinalizadosResponseBean;
 import ar.edu.ubp.das.conections.ConnectionManager;
@@ -36,16 +37,17 @@ public class ChatManager {
 		try {
 			List<AsistenciasFinalizadasBean> listaAsistencias = ObtenerMensajes();
 	
-			
+			List<String> listaServicios = ObtenerServicios();
+//			List<String> listaServicios = new ArrayList<String>();
 			Map<String, List<AsistenciasFinalizadasBean>> asistenciaPorSevicio = 
 					listaAsistencias.stream().collect(Collectors.groupingBy(AsistenciasFinalizadasBean::getIdServicio));
 			
 			ConnectionManager connectionManager = new ConnectionManager(pathConexiones, 
 					new  ConsoleTokenManger(this.cadenaConexion,this.usuario,this.password),logPath);
-			
-			for (String servicio : asistenciaPorSevicio.keySet()) {
+			System.out.println(gson.toJson(listaServicios));
+			for (String servicio : listaServicios) {
 				Conexion conexion = connectionManager.getConexiones().stream().
-						filter(x ->x.getDescripcion() != null && Objects.equals(x.getDescripcion(), "CierreChat_"+servicio))
+						filter(x ->x.getDescripcion() != null && Objects.equals(x.getDescripcion(), "ChatCerrados"+servicio))
 						.findFirst().orElse(null);
 				
 				if(conexion == null) {
@@ -66,34 +68,34 @@ public class ChatManager {
 				String jsonRespuesta = connectionManager.callApi(conexion.getNroConexion(), request);
 				
 				ListaFinalizadosResponseBean finalizadosRespuesta = gson.fromJson(jsonRespuesta,ListaFinalizadosResponseBean.class);
-				
-				for (AsistenciasFinalizadasBean asistenciaFinalizada : finalizadosRespuesta.getListaAsistenciasFinalizadas()) {
-					AsistenciasFinalizadasBean asistenciaLocal = asistenciasServicio.stream()
-					.filter(x->x.getIdAsistencia() == asistenciaFinalizada.getIdAsistencia()).findFirst().orElse(null);
-					
-					if(asistenciaLocal != null) {
-						//validar cancelacion
-						if(asistenciaLocal.getEstado() != null && asistenciaLocal.getEstado().toLowerCase().contentEquals("cancelado")
-								&& asistenciaFinalizada.getMotivoCancelacion() != null && !asistenciaFinalizada.getMotivoCancelacion().isEmpty()) {
-							//Corregir si el usuario esta deshabilitado
-						}
-					}
-					
-					marcarEnDb.add(asistenciaFinalizada);
-				}
-				
-				MarcarChatsCerrados(marcarEnDb);
-				
-				List<Integer> listaIdSolicitudRecibidas = finalizadosRespuesta.getListaAsistenciasFinalizadas().stream()
-						.map(AsistenciasFinalizadasBean::getIdAsistencia).collect(Collectors.toList());
-				//Obtenemos la listas con las asistencias que nosotros tenemos como finalizadas pero el servicio no
- 				List<AsistenciasFinalizadasBean> cancelacionesANotificar =  asistenciasServicio.stream()							
-						.filter(x->!listaIdSolicitudRecibidas.contains(x.getIdAsistencia())).collect(Collectors.toList());
- 				
- 				if(!cancelacionesANotificar.isEmpty()) {
- 					//Notificamos las que tenemos canceladas pero el servicio no
- 					NotificarCancelaciones(cancelacionesANotificar,connectionManager,servicio);
- 				}
+				System.out.println(jsonRespuesta);
+//				for (AsistenciasFinalizadasBean asistenciaFinalizada : finalizadosRespuesta.getListaAsistenciasFinalizadas()) {
+//					AsistenciasFinalizadasBean asistenciaLocal = asistenciasServicio.stream()
+//					.filter(x->x.getIdAsistencia() == asistenciaFinalizada.getIdAsistencia()).findFirst().orElse(null);
+//					
+//					if(asistenciaLocal != null) {
+//						//validar cancelacion
+//						if(asistenciaLocal.getEstado() != null && asistenciaLocal.getEstado().toLowerCase().contentEquals("cancelado")
+//								&& asistenciaFinalizada.getMotivoCancelacion() != null && !asistenciaFinalizada.getMotivoCancelacion().isEmpty()) {
+//							//Corregir si el usuario esta deshabilitado
+//						}
+//					}
+//					
+//					marcarEnDb.add(asistenciaFinalizada);
+//				}
+//				
+//				MarcarChatsCerrados(marcarEnDb);
+//				
+//				List<Integer> listaIdSolicitudRecibidas = finalizadosRespuesta.getListaAsistenciasFinalizadas().stream()
+//						.map(AsistenciasFinalizadasBean::getIdAsistencia).collect(Collectors.toList());
+//				//Obtenemos la listas con las asistencias que nosotros tenemos como finalizadas pero el servicio no
+// 				List<AsistenciasFinalizadasBean> cancelacionesANotificar =  asistenciasServicio.stream()							
+//						.filter(x->!listaIdSolicitudRecibidas.contains(x.getIdAsistencia())).collect(Collectors.toList());
+// 				
+// 				if(!cancelacionesANotificar.isEmpty()) {
+// 					//Notificamos las que tenemos canceladas pero el servicio no
+// 					NotificarCancelaciones(cancelacionesANotificar,connectionManager,servicio);
+// 				}
 			}
 		}
 		catch(Exception e) {
@@ -117,13 +119,13 @@ public class ChatManager {
 				return -1;
 			}
 			for (AsistenciasFinalizadasBean asistenciasFinalizadasBean : cancelacionesANotificar) {
-				CancelarChatRequestBean request = new CancelarChatRequestBean();
+				CerrarAsistenciaReqBean request = new CerrarAsistenciaReqBean();
 				request.setIdSolicitud(asistenciasFinalizadasBean.getIdAsistencia());
 				request.setMotivo(asistenciasFinalizadasBean.getMotivoCancelacion());
 				
 				String jsonRespuesta = connectionManager.callApi(conexion.getNroConexion(), request);
 				
-				CancelarChatResponseBean respuesta = gson.fromJson(jsonRespuesta, CancelarChatResponseBean.class);
+				CerrarAsistenciaRespBean respuesta = gson.fromJson(jsonRespuesta, CerrarAsistenciaRespBean.class);
 
 				if(respuesta.getEstado() != 1) {
 					Logger.getLogger(logPath).escribirLog("Error al enviar la cancelacion del chat " + 
@@ -159,6 +161,25 @@ public class ChatManager {
 		return listaAsistencias;
 	}
 	
+	public List<String> ObtenerServicios(){
+		List<ServicioBean> listaServicios = new ArrayList<ServicioBean>();
+		
+		try {
+			Dao<ServicioBean,ServicioBean> dao = DaoFactory.getDao("Servicio", "ar.edu.ubp.das",
+					"com.microsoft.sqlserver.jdbc.SQLServerDriver", this.cadenaConexion, "MS");
+
+			listaServicios = dao.select(null);
+			
+			if(listaServicios == null)
+				listaServicios = new ArrayList<ServicioBean>();
+			
+		} catch (SQLException e) {
+			Logger.getLogger(logPath).escribirLog("No se pudo recuperar los servicios",e);
+			return null;
+		}		
+		return listaServicios.stream().filter(x -> x.getHabilitado().toLowerCase().contentEquals("s")).
+				map(x->x.getId()).collect(Collectors.toList());
+	}
 	
 	
 	public List<AsistenciasFinalizadasBean> MarcarChatsCerrados(List<AsistenciasFinalizadasBean> finalizadosRespuesta){

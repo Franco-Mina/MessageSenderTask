@@ -8,7 +8,10 @@ import ar.edu.ubp.das.bean.DetalleAsistenciaBean;
 import ar.edu.ubp.das.db.Dao;
 
 public class MSDetalleAsistenciaDao extends Dao<DetalleAsistenciaBean, DetalleAsistenciaBean> {
-
+	
+	public MSDetalleAsistenciaDao(String provider, String connectionString) {
+		super(provider,connectionString);
+	}
 	@Override
 	public DetalleAsistenciaBean delete(DetalleAsistenciaBean arg0) throws SQLException {
 		// TODO Auto-generated method stub

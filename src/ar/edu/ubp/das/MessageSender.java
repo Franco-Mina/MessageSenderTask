@@ -44,13 +44,13 @@ public class MessageSender {
 				if(Thread.currentThread().isInterrupted()) return;			
 				ChatManager manager = new ChatManager();				
 				int result = 0;
-				System.out.println("Enviando Mensajes");
+				System.out.println("Cierre chats");
 				result = manager.CerrarChats();
 				if(result != 0) System.err.println("Error");
 			}
 		};
 		
-		executor.scheduleAtFixedRate(cierreChats, 0, 30, TimeUnit.SECONDS);	
+		executor.scheduleAtFixedRate(cierreChats, 0, 3200, TimeUnit.SECONDS);	
 
 		
 		
