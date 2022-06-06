@@ -16,8 +16,17 @@
 		<entidad>bomberos</entidad>
 		<tipo>Rest</tipo>
 		<url>http://localhost:8080/BomberosRest/api/asistencia/cerrados</url>
-		<accion>Get</accion>
+		<accion>Post</accion>
 		<req_token>true</req_token>
 		<descripcion>ChatCerradosbomberos</descripcion>
+	</conexion>
+	<conexion>
+		<nro_conexion>3</nro_conexion>
+		<entidad>bomberos</entidad>
+		<tipo>Rest</tipo>
+		<url>http://localhost:8080/BomberosRest/api/asistencia</url>
+		<accion>Post</accion>
+		<req_token>true</req_token>
+		<descripcion>CancelarChatbomberos</descripcion>
 	</conexion>
 </conexiones>
