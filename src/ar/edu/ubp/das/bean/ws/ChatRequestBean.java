@@ -1,6 +1,7 @@
 package ar.edu.ubp.das.bean.ws;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class ChatRequestBean {
 
 	public ChatRequestBean() {}
 	public ChatRequestBean(List<DetalleAsistenciaBean> mensajes) {
-		this.listaMensajes = mensajes;
+		this.listaMensajes = mensajes != null ? mensajes : new ArrayList<DetalleAsistenciaBean>();
 		this.fecha = Date.from(Instant.now());
 	}
 	

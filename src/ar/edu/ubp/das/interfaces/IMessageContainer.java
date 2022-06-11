@@ -6,6 +6,6 @@ import ar.edu.ubp.das.bean.DetalleAsistenciaBean;
 
 public interface IMessageContainer {
 	List<DetalleAsistenciaBean> ObtenerMensajes();
-	int GuardarMensajes(List<DetalleAsistenciaBean> mensajesNuevos);
+	int GuardarMensajes(List<DetalleAsistenciaBean> mensajesNuevos, String entidad);
 	int MarcarEnviados(List<DetalleAsistenciaBean> mensajesEnviados);
 }

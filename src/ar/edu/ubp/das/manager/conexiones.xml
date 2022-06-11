@@ -29,4 +29,13 @@
 		<req_token>true</req_token>
 		<descripcion>CancelarChatbomberos</descripcion>
 	</conexion>
+		<conexion>
+		<nro_conexion>4</nro_conexion>
+		<entidad>bomberos</entidad>
+		<tipo>Rest</tipo>
+		<url>http://localhost:8080/BomberosRest/api/asistencia/chat</url>
+		<accion>Put</accion>
+		<req_token>true</req_token>
+		<descripcion>Mensajebomberos</descripcion>
+	</conexion>
 </conexiones>

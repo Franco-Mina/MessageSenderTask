@@ -8,10 +8,12 @@ public class DetalleAsistenciaBean {
 	private String idAsistencia;
 	private String idServicio;
 	private String tipoDato;
-	private String Dato;
+	private String dato;
 	private Timestamp fechaCreacion;
 	private Timestamp fechaEnvio;
-	private Boolean finalizado;
+	private String creadoPor;
+	private Boolean asistenciaFinalizada;
+	
 	public int getId() {
 		return id;
 	}
@@ -43,10 +45,10 @@ public class DetalleAsistenciaBean {
 		this.fechaEnvio = fechaEnvio;
 	}
 	public String getDato() {
-		return Dato;
+		return dato;
 	}
 	public void setDato(String dato) {
-		Dato = dato;
+		this.dato = dato;
 	}
 	public String getIdServicio() {
 		return idServicio;
@@ -54,11 +56,16 @@ public class DetalleAsistenciaBean {
 	public void setIdServicio(String idServicio) {
 		this.idServicio = idServicio;
 	}
-	public Boolean getFinalizado() {
-		return finalizado;
+	public String getCreadoPor() {
+		return creadoPor;
 	}
-	public void setFinalizado(Boolean finalizado) {
-		this.finalizado = finalizado;
+	public void setCreadoPor(String creadoPor) {
+		this.creadoPor = creadoPor;
 	}
-	
+	public Boolean isAsistenciaFinalizada() {
+		return asistenciaFinalizada;
+	}
+	public void setAsistenciaFinalizada(Boolean asistenciaFinalizada) {
+		this.asistenciaFinalizada = asistenciaFinalizada;
+	}
 }

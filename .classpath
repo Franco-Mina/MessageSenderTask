@@ -11,10 +11,10 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="src/ar/edu/ubp/das/lib/conection-manager.jar" sourcepath="/ConnectionManager"/>
-	<classpathentry kind="lib" path="src/ar/edu/ubp/das/lib/ErrorLogger.jar"/>
+	<classpathentry kind="lib" path="src/ar/edu/ubp/das/lib/ErrorLogger.jar" sourcepath="/ErrorLogger"/>
 	<classpathentry kind="lib" path="src/ar/edu/ubp/das/lib/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="src/ar/edu/ubp/das/lib/das-dao.jar"/>
+	<classpathentry kind="lib" path="src/ar/edu/ubp/das/lib/conection-manager.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

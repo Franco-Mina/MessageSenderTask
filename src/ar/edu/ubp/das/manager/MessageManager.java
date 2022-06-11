@@ -6,29 +6,29 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 
+import ar.edu.ubp.das.Servicios.Servicios;
 import ar.edu.ubp.das.bean.DetalleAsistenciaBean;
 import ar.edu.ubp.das.bean.ws.ChatRequestBean;
 import ar.edu.ubp.das.bean.ws.ChatResponseBean;
 import ar.edu.ubp.das.conections.ConnectionManager;
 import ar.edu.ubp.das.conections.util.Conexion;
+import ar.edu.ubp.das.credenciales.CredencialesBean;
 import ar.edu.ubp.das.interfaces.IMessageContainer;
 import ar.edu.ubp.das.logger.Logger;
 import ar.edu.ubp.das.token.db.ConsoleTokenManger;
 
 public class MessageManager {
-	private final String cadenaConexion = "jdbc:sqlserver://172.10.3.106;databaseName=gobierno_provincial";
-	private final String usuario        = "sa";
-	private final String password       = "Francomina1";
-	private final String logPath        = "c:/Logger/MessageSender/";
-	private final String pathConexiones = "src/ar/edu/ubp/das/manager/conexiones.xml";
+	private CredencialesBean credenciales;
 	private IMessageContainer contenedorDeMensajes;
 	
-	public MessageManager(IMessageContainer contenedor) {
+	public MessageManager(IMessageContainer contenedor,CredencialesBean credenciales) {
 		this.contenedorDeMensajes = contenedor;
+		this.credenciales = credenciales;
 	}	
 	
 	public int EnviarMensajes() {
 		try {
+			List<String> listaServicios = new Servicios(credenciales).ObtenerServicios();
 			
 			List<DetalleAsistenciaBean> listaMensajes = contenedorDeMensajes.ObtenerMensajes();
 			//Separar por entidad 
@@ -37,18 +37,18 @@ public class MessageManager {
 							Collectors.groupingBy(DetalleAsistenciaBean::getIdServicio));
 			
 			//Llamar por entidad			
-			ConnectionManager connectionManager = new ConnectionManager(pathConexiones, 
-					new  ConsoleTokenManger(this.cadenaConexion,this.usuario,this.password),logPath);
+			ConnectionManager connectionManager = new ConnectionManager(credenciales.getPathConexiones(), 
+					new ConsoleTokenManger(credenciales.getCadenaConexion(),credenciales.getUsuario(),credenciales.getPassword()),credenciales.getLogPath());
 			
 			Gson gson = new Gson();
 			
-			for (String entidad : mensajesPorEntidad.keySet()) {
-			
+			for (String entidad : listaServicios) {
 				Conexion conexion = connectionManager.getConexiones().stream().
-						filter(x -> x.getDescripcion().contentEquals("Mensaje_"+entidad)).findFirst().orElse(null);
+						filter(x ->x.getDescripcion() != null && x.getDescripcion().contentEquals("Mensaje"+entidad))
+						.findFirst().orElse(null);
 				
 				if(conexion == null) {
-					Logger.getLogger(this.logPath).escribirLog("No se encontro una conexion para enviar mensajes a la entidad "
+					Logger.getLogger(this.credenciales.getLogPath()).escribirLog("No se encontro una conexion para enviar mensajes a la entidad "
 							+ entidad + " los mensajes quedaran registrados para intentar nuevamente.");
 					//Removemos los mensajes de la entidad para despues no marcarlos como enviados.
 					mensajesPorEntidad.remove(entidad);
@@ -56,30 +56,29 @@ public class MessageManager {
 					continue;
 				}
 				
-				ChatRequestBean request = new ChatRequestBean(mensajesPorEntidad.get(entidad));
+				List<DetalleAsistenciaBean> mensajesEntidad = mensajesPorEntidad.get(entidad);
+				
+				ChatRequestBean request = new ChatRequestBean(mensajesEntidad);
 				String respuesta = 
 						connectionManager.callApi(conexion.getNroConexion(), request);
 			
 				ChatResponseBean mensajesNuevos = gson.fromJson(respuesta, ChatResponseBean.class);
 							
 				if(!mensajesNuevos.getListaMensajes().isEmpty()) {
-					contenedorDeMensajes.GuardarMensajes(mensajesNuevos.getListaMensajes());	
+					contenedorDeMensajes.GuardarMensajes(mensajesNuevos.getListaMensajes(),entidad);	
 				}	
 				
-				//Marcar Enviados
-				contenedorDeMensajes.MarcarEnviados(mensajesPorEntidad.get(entidad));
-			}
-			
-			FileManager fileManager = new FileManager(logPath);
-			//Recuperamos algun mensaje que no se pudo guardar antes
-			List<DetalleAsistenciaBean> mensajesNoGuardadosAsistenciaBeans = fileManager.RecuperarMensajesNoGuardados();
+				if(mensajesEntidad != null && !mensajesEntidad.isEmpty()) {
+					//Marcar Enviados
+					contenedorDeMensajes.MarcarEnviados(mensajesEntidad);
+				}				
+			}			
 	
-			contenedorDeMensajes.GuardarMensajes(mensajesNoGuardadosAsistenciaBeans);
-			
+			System.out.println("fin envio de mensajes");
 			return 0;
 		}
 		catch (Exception e) {
-			Logger.getLogger(logPath).escribirLog("Error en el envio de mensajes " , e);
+			Logger.getLogger(credenciales.getLogPath()).escribirLog("Error en el envio de mensajes ", e);
 			return -1;
 		}
 	}

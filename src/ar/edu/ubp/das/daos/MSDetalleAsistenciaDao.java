@@ -20,13 +20,16 @@ public class MSDetalleAsistenciaDao extends Dao<DetalleAsistenciaBean, DetalleAs
 
 	@Override
 	public DetalleAsistenciaBean insert(DetalleAsistenciaBean bean) throws SQLException {
-
-		this.setProcedure("dbo.INSERTAR_MENSAJE(?,?,?)");
+		this.connect();
+		this.setProcedure("dbo.INSERTAR_MENSAJE(?,?,?,?,?,?,?)");
 		this.setParameter(1, bean.getIdAsistencia());
 		this.setParameter(2, bean.getTipoDato());
-		this.setParameter(3, bean.getFechaCreacion());		
-		boolean finalizado = bean.getFinalizado() != null && bean.getFinalizado().booleanValue();
-		this.setParameter(4, (finalizado ? 1 : 0));
+		this.setParameter(3, bean.getDato());
+		this.setParameter(4, bean.getFechaCreacion());	
+		this.setParameter(5, bean.getIdServicio());
+		this.setParameter(6, bean.getCreadoPor());
+		boolean finalizado = bean.isAsistenciaFinalizada() != null && bean.isAsistenciaFinalizada().booleanValue();
+		this.setParameter(7, finalizado);
 		
 		this.executeUpdate();
 		
@@ -51,6 +54,7 @@ public class MSDetalleAsistenciaDao extends Dao<DetalleAsistenciaBean, DetalleAs
 
 	@Override
 	public List<DetalleAsistenciaBean> select(DetalleAsistenciaBean arg0) throws SQLException {
+		this.connect();
 		this.setProcedure("dbo.GetDetalleAsistencia()");
 		
 		return this.executeQuery();
@@ -58,8 +62,11 @@ public class MSDetalleAsistenciaDao extends Dao<DetalleAsistenciaBean, DetalleAs
 
 	@Override
 	public DetalleAsistenciaBean update(DetalleAsistenciaBean arg0) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		this.connect();
+		this.setProcedure("dbo.MARCAR_MENSAJE_ENVIADO(?)");
+		this.setParameter(1, arg0.getId());
+		this.executeUpdate();
+		return arg0;
 	}
 
 	@Override

@@ -11,39 +11,39 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 
+import ar.edu.ubp.das.Servicios.Servicios;
 import ar.edu.ubp.das.bean.AsistenciasFinalizadasBean;
-import ar.edu.ubp.das.bean.ServicioBean;
 import ar.edu.ubp.das.bean.ws.CerrarAsistenciaReqBean;
 import ar.edu.ubp.das.bean.ws.CerrarAsistenciaRespBean;
 import ar.edu.ubp.das.bean.ws.ListaFinalizadosRequestBean;
 import ar.edu.ubp.das.bean.ws.ListaFinalizadosResponseBean;
 import ar.edu.ubp.das.conections.ConnectionManager;
 import ar.edu.ubp.das.conections.util.Conexion;
+import ar.edu.ubp.das.credenciales.CredencialesBean;
 import ar.edu.ubp.das.db.Dao;
 import ar.edu.ubp.das.db.DaoFactory;
 import ar.edu.ubp.das.logger.Logger;
 import ar.edu.ubp.das.token.db.ConsoleTokenManger;
 
 public class ChatManager {
-	private final String cadenaConexion = "jdbc:sqlserver://172.10.3.106;databaseName=gobierno_provincial;user=sa;password=Francomina1;";
-	private final String usuario        = "sa";
-	private final String password       = "Francomina1";
-	private final String logPath        = "c:/Logger/MessageSender/Chats/";
-	private final String pathConexiones = "src/ar/edu/ubp/das/manager/conexiones.xml";
+	private CredencialesBean credenciales;
 	
+	public ChatManager(CredencialesBean credenciales) {
+		this.credenciales= credenciales;
+	}	
 	
 	public int CerrarChats() {
 		Gson gson = new Gson();
 		try {
 			List<AsistenciasFinalizadasBean> listaAsistencias = ObtenerMensajes();
 	
-			List<String> listaServicios = ObtenerServicios();
+			List<String> listaServicios = new Servicios(credenciales).ObtenerServicios();
 
 			Map<String, List<AsistenciasFinalizadasBean>> asistenciaPorSevicio = 
 					listaAsistencias.stream().collect(Collectors.groupingBy(AsistenciasFinalizadasBean::getIdServicio));
 			
-			ConnectionManager connectionManager = new ConnectionManager(pathConexiones, 
-					new  ConsoleTokenManger(this.cadenaConexion,this.usuario,this.password),logPath);
+			ConnectionManager connectionManager = new ConnectionManager(credenciales.getPathConexiones(), 
+					new ConsoleTokenManger(credenciales.getCadenaConexion(),credenciales.getUsuario(),credenciales.getPassword()),credenciales.getLogPath());
 			
 			for (String servicio : listaServicios) {
 				Conexion conexion = connectionManager.getConexiones().stream().
@@ -51,7 +51,7 @@ public class ChatManager {
 						.findFirst().orElse(null);
 				
 				if(conexion == null) {
-					Logger.getLogger(this.logPath).escribirLog("No se encontro una conexion para pedir los chats finalizados a la entidad "
+					Logger.getLogger(this.credenciales.getLogPath()).escribirLog("No se encontro una conexion para pedir los chats finalizados a la entidad "
 							+ servicio);
 					// Removemos los chats de la entidad para despues no marcarlos como enviados.
 					asistenciaPorSevicio.remove(servicio);
@@ -86,7 +86,8 @@ public class ChatManager {
 					marcarEnDb.add(asistenciaFinalizada);
 				}
 				
-				MarcarChatsCerrados(marcarEnDb);
+				if(!marcarEnDb.isEmpty())
+					MarcarChatsCerrados(marcarEnDb);
 				
 				if(asistenciasServicio != null) {
 					List<Integer> listaIdSolicitudRecibidas = finalizadosRespuesta.getListaAsistenciasFinalizadas().stream()
@@ -104,9 +105,10 @@ public class ChatManager {
 			}
 		}
 		catch(Exception e) {
-			Logger.getLogger(logPath).escribirLog(e);
+			Logger.getLogger(credenciales.getLogPath()).escribirLog(e);
+			return -1;
 		}
-		
+		System.out.println("Fin cierre de chats");
 		return 0;
 	}
 	
@@ -120,7 +122,7 @@ public class ChatManager {
 			List<AsistenciasFinalizadasBean> solicitudesMarcarNotificadas =  new ArrayList<AsistenciasFinalizadasBean>();
 			
 			if(conexion == null) {
-				Logger.getLogger(this.logPath).escribirLog("No se encontro una conexion para enviar los chats finalizados a la entidad "
+				Logger.getLogger(this.credenciales.getLogPath()).escribirLog("No se encontro una conexion para enviar los chats finalizados a la entidad "
 						+ servicio);
 				return -1;
 			}
@@ -139,12 +141,12 @@ public class ChatManager {
 						if(respuesta !=null && respuesta.getMensaje() != null) {
 							error.append(" con error:" + respuesta.getMensaje()); 
 						}
-						Logger.getLogger(logPath).escribirLog(error.toString());
+						Logger.getLogger(credenciales.getLogPath()).escribirLog(error.toString());
 					}
 					
 					solicitudesMarcarNotificadas.add(asistenciasFinalizadasBean);
 				}catch (Exception e) {
-					Logger.getLogger(logPath).escribirLog("Error al enviar la cancelacion del chat " + 
+					Logger.getLogger(credenciales.getLogPath()).escribirLog("Error al enviar la cancelacion del chat " + 
 							asistenciasFinalizadasBean.getIdAsistencia() + " con error:"+ e.getMessage());
 				}				
 			}	
@@ -154,7 +156,7 @@ public class ChatManager {
 			
 				
 		} catch (Exception e) {
-			Logger.getLogger(logPath).escribirLog(e);
+			Logger.getLogger(credenciales.getLogPath()).escribirLog(e);
 		}
 		
 		return 0;
@@ -166,52 +168,31 @@ public class ChatManager {
 		
 		try {
 			Dao<AsistenciasFinalizadasBean, AsistenciasFinalizadasBean> dao = DaoFactory.getDao("Asistencia", "ar.edu.ubp.das",
-					"com.microsoft.sqlserver.jdbc.SQLServerDriver", this.cadenaConexion, "MS");
+					"com.microsoft.sqlserver.jdbc.SQLServerDriver", this.credenciales.getCadenaConexion(), "MS");
 			
 			listaAsistencias = dao.select(null);
 			
 			if(listaAsistencias == null)
 				listaAsistencias = new ArrayList<AsistenciasFinalizadasBean>();
 		} catch (SQLException e) {
-			Logger.getLogger(logPath).escribirLog("No se pudo recuperar los chats",e);
+			Logger.getLogger(credenciales.getLogPath()).escribirLog("No se pudo recuperar los chats",e);
 			return null;
 		}		
 		return listaAsistencias;
 	}
-	
-	public List<String> ObtenerServicios(){
-		List<ServicioBean> listaServicios = new ArrayList<ServicioBean>();
-		
-		try {
-			Dao<ServicioBean,ServicioBean> dao = DaoFactory.getDao("Servicio", "ar.edu.ubp.das",
-					"com.microsoft.sqlserver.jdbc.SQLServerDriver", this.cadenaConexion, "MS");
-
-			listaServicios = dao.select(null);
-			
-			if(listaServicios == null)
-				listaServicios = new ArrayList<ServicioBean>();
-			
-		} catch (SQLException e) {
-			Logger.getLogger(logPath).escribirLog("No se pudo recuperar los servicios",e);
-			return null;
-		}		
-		return listaServicios.stream().filter(x -> x.getHabilitado().toLowerCase().contentEquals("s")).
-				map(x->x.getId()).collect(Collectors.toList());
-	}
-	
 	
 	public List<AsistenciasFinalizadasBean> MarcarChatsCerrados(List<AsistenciasFinalizadasBean> finalizadosRespuesta){
 		List<AsistenciasFinalizadasBean> listaAsistencias = new ArrayList<AsistenciasFinalizadasBean>();
 		
 		try {
 			Dao<AsistenciasFinalizadasBean, AsistenciasFinalizadasBean> dao = DaoFactory.getDao("Asistencia", "ar.edu.ubp.das",
-					"com.microsoft.sqlserver.jdbc.SQLServerDriver", this.cadenaConexion, "MS");
+					"com.microsoft.sqlserver.jdbc.SQLServerDriver", this.credenciales.getCadenaConexion(), "MS");
 			for (AsistenciasFinalizadasBean asistenciasFinalizadasBean : finalizadosRespuesta) {
 				dao.insert(asistenciasFinalizadasBean);
 			}
 			 
 		} catch (SQLException e) {
-			Logger.getLogger(logPath).escribirLog("No se pudo recuperar los chats",e);
+			Logger.getLogger(credenciales.getLogPath()).escribirLog("No se pudo recuperar los chats",e);
 			return null;
 		}		
 		return listaAsistencias;
