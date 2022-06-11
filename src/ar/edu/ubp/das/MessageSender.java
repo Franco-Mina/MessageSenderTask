@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import ar.edu.ubp.das.containers.MessageContainer;
+import ar.edu.ubp.das.credenciales.CredencialesBean;
 import ar.edu.ubp.das.logger.Logger;
 import ar.edu.ubp.das.manager.ChatManager;
 import ar.edu.ubp.das.manager.MessageManager;
@@ -15,14 +16,20 @@ import ar.edu.ubp.das.manager.MessageManager;
 public class MessageSender {
 
 	public static void main(String[] args) {
+		CredencialesBean credenciales = new CredencialesBean();
+		credenciales.setCadenaConexion("jdbc:sqlserver://172.10.3.106;databaseName=gobierno_provincial;user=sa;password=Francomina1;"); 
+		credenciales.setUsuario("sa");                                                                                           
+		credenciales.setPassword("Francomina1");                                                                                  
+		credenciales.setLogPath("c:/Logger/MessageSender/Chats/");                                                               
+		credenciales.setPathConexiones("src/ar/edu/ubp/das/manager/conexiones.xml");      
 		
-		String logPath = "c:/Logger/MessageSender/";
+		String logPath = credenciales.getLogPath();
 		Runnable nuevosMensajes = new Runnable() {			
 			@Override
 			public void run() {
 				//Esta funcion es la que se llama cada x cantidad de tiempo
 				if(Thread.currentThread().isInterrupted()) return;			
-				MessageManager manager = new MessageManager(new MessageContainer());				
+				MessageManager manager = new MessageManager(new MessageContainer(credenciales),credenciales);				
 				int result = 0;
 				System.out.println("Enviando Mensajes");
 				result = manager.EnviarMensajes();
@@ -34,7 +41,7 @@ public class MessageSender {
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		//Se configura el schedule, el primer numero es el delay hasta la primera ejecucion
 		//el segundo es cada cuanto se repite y el ultimo valor es la unidad de tiempo
-//		executor.scheduleAtFixedRate(nuevosMensajes, 5, 30, TimeUnit.SECONDS);	
+		executor.scheduleAtFixedRate(nuevosMensajes, 0, 30, TimeUnit.SECONDS);	
 
 		
 		Runnable cierreChats = new Runnable() {			
@@ -42,17 +49,15 @@ public class MessageSender {
 			public void run() {
 				//Esta funcion es la que se llama cada x cantidad de tiempo
 				if(Thread.currentThread().isInterrupted()) return;			
-				ChatManager manager = new ChatManager();				
+				ChatManager manager = new ChatManager(credenciales);				
 				int result = 0;
-				System.out.println("Enviando Mensajes");
+				System.out.println("Cierre chats");
 				result = manager.CerrarChats();
 				if(result != 0) System.err.println("Error");
 			}
 		};
 		
-		executor.scheduleAtFixedRate(cierreChats, 0, 30, TimeUnit.SECONDS);	
-
-		
+		executor.scheduleAtFixedRate(cierreChats, 10, 30, TimeUnit.SECONDS);		
 		
 		InputStreamReader inputStream = new InputStreamReader(System.in);
 		BufferedReader bufferedReader = new BufferedReader(inputStream);

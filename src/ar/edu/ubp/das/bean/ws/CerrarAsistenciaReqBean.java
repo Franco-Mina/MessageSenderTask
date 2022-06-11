@@ -1,8 +1,11 @@
 package ar.edu.ubp.das.bean.ws;
 
-public class CancelarChatRequestBean {
+public class CerrarAsistenciaReqBean {
 
 	private String token;
+	private String motivo;
+	private int idSolicitud;
+	
 	public String getToken() {
 		return token;
 	}
@@ -21,7 +24,5 @@ public class CancelarChatRequestBean {
 	public void setIdSolicitud(int idSolicitud) {
 		this.idSolicitud = idSolicitud;
 	}
-	private String motivo;
-	private int idSolicitud;
 	
 }

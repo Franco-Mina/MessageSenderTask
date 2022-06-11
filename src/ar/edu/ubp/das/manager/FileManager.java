@@ -25,7 +25,7 @@ public class FileManager {
 		File directorio = new File(path);
 		File archivos[] = directorio.listFiles();
 		List<DetalleAsistenciaBean> listaMensajes = new ArrayList<DetalleAsistenciaBean>();		
-		
+		if(archivos == null || archivos.length == 0) return listaMensajes;
 		for (File file : archivos) {
 			try {
 				//Deserializamos los mensajes

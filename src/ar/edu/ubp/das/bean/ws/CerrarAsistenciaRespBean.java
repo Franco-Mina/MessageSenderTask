@@ -1,7 +1,11 @@
 package ar.edu.ubp.das.bean.ws;
 
-public class CancelarChatResponseBean {
-
+public class CerrarAsistenciaRespBean {
+	private String mensaje;
+	private int idSolicitud;
+	private int estado;
+	private boolean finalizado;
+	
 	public String getMensaje() {
 		return mensaje;
 	}
@@ -25,10 +29,5 @@ public class CancelarChatResponseBean {
 	}
 	public void setFinalizado(boolean finalizado) {
 		this.finalizado = finalizado;
-	}
-	private String mensaje;
-	private int idSolicitud;
-	private int estado;
-	private boolean finalizado;
-	
+	}	
 }
