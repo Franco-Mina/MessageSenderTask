@@ -48,6 +48,7 @@ public class MSDetalleAsistenciaDao extends Dao<DetalleAsistenciaBean, DetalleAs
 		bean.setFechaEnvio(arg0.getTimestamp("Fecha_Envio"));
 		bean.setDato(arg0.getString("Dato"));
 		bean.setIdServicio(arg0.getString("Id_Servicio"));
+		bean.setCreadoPor(arg0.getString("Creada_Por"));
 		
 		return bean;
 	}

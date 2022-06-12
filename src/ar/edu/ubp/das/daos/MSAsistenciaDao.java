@@ -58,10 +58,8 @@ public class MSAsistenciaDao extends Dao<AsistenciasFinalizadasBean, Asistencias
 
 	@Override
 	public AsistenciasFinalizadasBean update(AsistenciasFinalizadasBean arg0) throws SQLException {
-		this.connect();
-		//corregir 
-		
-		return arg0;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

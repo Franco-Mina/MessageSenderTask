@@ -74,7 +74,7 @@ public class MessageManager {
 				}				
 			}			
 	
-			System.out.println("fin envio de mensajes");
+			System.out.println("Fin envio de mensajes");
 			return 0;
 		}
 		catch (Exception e) {

@@ -35,7 +35,7 @@ public class ChatManager {
 	public int CerrarChats() {
 		Gson gson = new Gson();
 		try {
-			List<AsistenciasFinalizadasBean> listaAsistencias = ObtenerMensajes();
+			List<AsistenciasFinalizadasBean> listaAsistencias = ObtenerChatsCerrados();
 	
 			List<String> listaServicios = new Servicios(credenciales).ObtenerServicios();
 
@@ -163,7 +163,7 @@ public class ChatManager {
 	}
 	
 	
-	public List<AsistenciasFinalizadasBean> ObtenerMensajes(){
+	public List<AsistenciasFinalizadasBean> ObtenerChatsCerrados(){
 		List<AsistenciasFinalizadasBean> listaAsistencias = new ArrayList<AsistenciasFinalizadasBean>();
 		
 		try {

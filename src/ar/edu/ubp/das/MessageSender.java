@@ -41,7 +41,7 @@ public class MessageSender {
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		//Se configura el schedule, el primer numero es el delay hasta la primera ejecucion
 		//el segundo es cada cuanto se repite y el ultimo valor es la unidad de tiempo
-		executor.scheduleAtFixedRate(nuevosMensajes, 0, 30, TimeUnit.SECONDS);	
+		executor.scheduleAtFixedRate(nuevosMensajes, 1, 10, TimeUnit.SECONDS);	
 
 		
 		Runnable cierreChats = new Runnable() {			
@@ -57,7 +57,7 @@ public class MessageSender {
 			}
 		};
 		
-		executor.scheduleAtFixedRate(cierreChats, 10, 30, TimeUnit.SECONDS);		
+		executor.scheduleAtFixedRate(cierreChats, 1, 15, TimeUnit.SECONDS);		
 		
 		InputStreamReader inputStream = new InputStreamReader(System.in);
 		BufferedReader bufferedReader = new BufferedReader(inputStream);
