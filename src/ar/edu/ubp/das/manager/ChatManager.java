@@ -76,9 +76,10 @@ public class ChatManager {
 								
 								if(asistenciaLocal != null) {
 									//validar cancelacion
-									if(asistenciaLocal.getEstado() != null && asistenciaLocal.getEstado().toLowerCase().contentEquals("cancelado")
-											&& asistenciaFinalizada.getMotivoCancelacion() != null && !asistenciaFinalizada.getMotivoCancelacion().isEmpty()) {
-										//TODO: Corregir si el usuario esta deshabilitado
+									if(asistenciaLocal.getFechaCancelacion() != null && ((asistenciaFinalizada.getMotivoCancelacion() != null 
+											&& !asistenciaFinalizada.getMotivoCancelacion().isEmpty() || asistenciaFinalizada.getFechaCancelacion() != null))) {
+										//Si el servicio tiene marcada la cancelacion entonces se corrige 
+										//CorregirCancelacion(asistenciaLocal);
 									}
 								}
 					}					
@@ -196,5 +197,18 @@ public class ChatManager {
 			return null;
 		}		
 		return listaAsistencias;
+	}
+	
+	public int CorregirCancelacion(AsistenciasFinalizadasBean asistenciaACorregir){
+				
+		try {
+			Dao<AsistenciasFinalizadasBean, AsistenciasFinalizadasBean> dao = DaoFactory.getDao("Asistencia", "ar.edu.ubp.das",
+					"com.microsoft.sqlserver.jdbc.SQLServerDriver", this.credenciales.getCadenaConexion(), "MS");
+			dao.update(asistenciaACorregir);	
+			return 0;			 
+		} catch (SQLException e) {
+			Logger.getLogger(credenciales.getLogPath()).escribirLog("No se pudo recuperar los chats",e);
+			return -1;
+		}	
 	}
 }

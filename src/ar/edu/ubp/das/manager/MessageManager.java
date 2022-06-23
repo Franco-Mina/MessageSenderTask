@@ -63,7 +63,12 @@ public class MessageManager {
 						connectionManager.callApi(conexion.getNroConexion(), request);
 			
 				ChatResponseBean mensajesNuevos = gson.fromJson(respuesta, ChatResponseBean.class);
-							
+			
+				if(mensajesNuevos.getEstado() != 1) {
+					//Si la respues no es positiva continuamos con el proximo servicio
+					continue;
+				}
+				
 				if(!mensajesNuevos.getListaMensajes().isEmpty()) {
 					contenedorDeMensajes.GuardarMensajes(mensajesNuevos.getListaMensajes(),entidad);	
 				}	
