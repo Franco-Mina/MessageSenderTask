@@ -62,6 +62,8 @@ public class MessageManager {
 				String respuesta = 
 						connectionManager.callApi(conexion.getNroConexion(), request);
 			
+				if(respuesta == null || respuesta.trim() == "") continue;
+				
 				ChatResponseBean mensajesNuevos = gson.fromJson(respuesta, ChatResponseBean.class);
 			
 				if(mensajesNuevos.getEstado() != 1) {

@@ -8,7 +8,7 @@ public class AsistenciaBean {
 	private String idServicio;
 	private int idUsuario;
 	private String estado;
-	private int idSolicitud;
+	private String idSolicitud;
 	private Timestamp fechaCreacion;
 	private Timestamp fechaCierre;
 	private Timestamp fechaCancelacion;
@@ -36,10 +36,10 @@ public class AsistenciaBean {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	public int getIdSolicitud() {
+	public String getIdSolicitud() {
 		return idSolicitud;
 	}
-	public void setIdSolicitud(int idSolicitud) {
+	public void setIdSolicitud(String idSolicitud) {
 		this.idSolicitud = idSolicitud;
 	}
 	public Timestamp getFechaCreacion() {

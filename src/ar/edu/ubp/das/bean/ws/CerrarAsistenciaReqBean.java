@@ -4,7 +4,7 @@ public class CerrarAsistenciaReqBean {
 
 	private String token;
 	private String motivo;
-	private int idSolicitud;
+	private String idSolicitud;
 	
 	public String getToken() {
 		return token;
@@ -18,10 +18,10 @@ public class CerrarAsistenciaReqBean {
 	public void setMotivo(String motivo) {
 		this.motivo = motivo;
 	}
-	public int getIdSolicitud() {
+	public String getIdSolicitud() {
 		return idSolicitud;
 	}
-	public void setIdSolicitud(int idSolicitud) {
+	public void setIdSolicitud(String idSolicitud) {
 		this.idSolicitud = idSolicitud;
 	}
 	

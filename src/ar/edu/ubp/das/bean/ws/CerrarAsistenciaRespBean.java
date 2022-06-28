@@ -2,7 +2,7 @@ package ar.edu.ubp.das.bean.ws;
 
 public class CerrarAsistenciaRespBean {
 	private String mensaje;
-	private int idSolicitud;
+	private String idSolicitud;
 	private int estado;
 	private boolean finalizado;
 	
@@ -12,10 +12,10 @@ public class CerrarAsistenciaRespBean {
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
-	public int getIdSolicitud() {
+	public String getIdSolicitud() {
 		return idSolicitud;
 	}
-	public void setIdSolicitud(int idSolicitud) {
+	public void setIdSolicitud(String idSolicitud) {
 		this.idSolicitud = idSolicitud;
 	}
 	public int getEstado() {

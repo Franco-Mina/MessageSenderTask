@@ -10,13 +10,14 @@ public class AsistenciasFinalizadasBean {
 	private Timestamp fechaCancelacion;
 	private String motivoCancelacion;
 	private String estado;
-	public int getIdSolicitud() {
+	private String idSolicitud;
+	
+	public String getIdSolicitud() {
 		return idSolicitud;
 	}
-	public void setIdSolicitud(int idSolicitud) {
+	public void setIdSolicitud(String idSolicitud) {
 		this.idSolicitud = idSolicitud;
 	}
-	private int idSolicitud;
 	
 	public String getEstado() {
 		return estado;
