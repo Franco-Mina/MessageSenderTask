@@ -9,7 +9,7 @@ public class DetalleAsistenciaBean {
 	private String idServicio;
 	private String tipoDato;
 	private String dato;
-	private Timestamp fechaCreacion;
+	private String fechaCreacion;
 	private Timestamp fechaEnvio;
 	private String creadoPor;
 	private Boolean asistenciaFinalizada;
@@ -32,10 +32,10 @@ public class DetalleAsistenciaBean {
 	public void setTipoDato(String tipoDato) {
 		this.tipoDato = tipoDato;
 	}
-	public Timestamp getFechaCreacion() {
+	public String getFechaCreacion() {
 		return fechaCreacion;
 	}
-	public void setFechaCreacion(Timestamp fechaCreacion) {
+	public void setFechaCreacion(String fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
 	}
 	public Timestamp getFechaEnvio() {

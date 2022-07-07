@@ -44,7 +44,7 @@ public class MSDetalleAsistenciaDao extends Dao<DetalleAsistenciaBean, DetalleAs
 		bean.setId(arg0.getInt("Id"));
 		bean.setIdAsistencia(arg0.getString("Id_Solicitud"));
 		bean.setTipoDato(arg0.getString("Tipo_Dato"));
-		bean.setFechaCreacion(arg0.getTimestamp("Fecha_Creacion"));
+		bean.setFechaCreacion(arg0.getString("Fecha_Creacion"));
 		bean.setFechaEnvio(arg0.getTimestamp("Fecha_Envio"));
 		bean.setDato(arg0.getString("Dato"));
 		bean.setIdServicio(arg0.getString("Id_Servicio"));

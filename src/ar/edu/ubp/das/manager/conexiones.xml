@@ -38,42 +38,5 @@
 		<req_token>true</req_token>
 		<descripcion>Mensajebomberos</descripcion>
 	</conexion>
-	<conexion>
-		<nro_conexion>5</nro_conexion>
-		<entidad>defensa_civil</entidad>
-		<tipo>Soap</tipo>
-		<url>http://localhost:8080/DefensaCivilSoap/services/asistenciaws?wsdl</url>
-		<accion>cerrarAsistencia</accion>
-		<req_token>true</req_token>
-		<descripcion>CancelarChatdefensa_civil</descripcion>
-	</conexion>
-	<conexion>
-		<nro_conexion>6</nro_conexion>
-		<entidad>defensa_civil</entidad>
-		<tipo>Soap</tipo>
-		<url>http://localhost:8080/DefensaCivilSoap/services/asistenciaws?wsdl</url>
-		<accion>insertarChat</accion>
-		<req_token>true</req_token>
-		<descripcion>Mensajedefensa_civil</descripcion>
-	</conexion>
-	<conexion>
-		<nro_conexion>7</nro_conexion>
-		<entidad>defensa_civil</entidad>
-		<tipo>Soap</tipo>
-		<url>http://localhost:8080/DefensaCivilSoap/services/asistenciaws?wsdl</url>
-		<accion>obtenerChatsCerrados</accion>
-		<req_token>true</req_token>
-		<descripcion>ChatCerradosdefensa_civil</descripcion>
-	</conexion>
-	<conexion>
-		<nro_conexion>8</nro_conexion>
-		<entidad>defensa_civil</entidad>
-		<tipo>Soap</tipo>
-		<url>http://localhost:8080/DefensaCivilSoap/services/TokenWSPort?wsdl</url>
-		<accion>getToken</accion>
-		<req_token>false</req_token>
-		<neg_token>true</neg_token>
-		<usuario>u1</usuario>
-		<password>123</password>
-	</conexion>
+	
 </conexiones>
