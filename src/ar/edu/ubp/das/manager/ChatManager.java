@@ -66,6 +66,7 @@ public class ChatManager {
 				request.setFecha(Timestamp.from(Instant.now()));
 				
 				String jsonRespuesta = connectionManager.callApi(conexion.getNroConexion(), request);
+				if(jsonRespuesta == null || jsonRespuesta.trim() == "") continue;
 				
 				ListaFinalizadosResponseBean finalizadosRespuesta = gson.fromJson(jsonRespuesta,ListaFinalizadosResponseBean.class);
 				
