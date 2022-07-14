@@ -65,7 +65,14 @@ public class ChatManager {
 				
 				request.setFecha(Timestamp.from(Instant.now()));
 				
-				String jsonRespuesta = connectionManager.callApi(conexion.getNroConexion(), request);
+				String jsonRespuesta = null;
+				
+				try {
+					jsonRespuesta = connectionManager.callApi(conexion.getNroConexion(), request);
+				} catch (Exception e) {
+					Logger.getLogger(credenciales.getLogPath()).escribirLog("Error al buscar los chats cerrados para " + servicio,e);
+				}
+				
 				if(jsonRespuesta == null || jsonRespuesta.trim() == "") continue;
 				
 				ListaFinalizadosResponseBean finalizadosRespuesta = gson.fromJson(jsonRespuesta,ListaFinalizadosResponseBean.class);
@@ -134,7 +141,14 @@ public class ChatManager {
 					request.setIdSolicitud(asistenciasFinalizadasBean.getIdSolicitud());
 					request.setMotivo(asistenciasFinalizadasBean.getMotivoCancelacion());
 					
-					String jsonRespuesta = connectionManager.callApi(conexion.getNroConexion(), request);
+					String jsonRespuesta = null;
+					
+					try {
+						jsonRespuesta = connectionManager.callApi(conexion.getNroConexion(), request);
+					} catch (Exception e) {
+						StringBuilder error = new StringBuilder("Error al enviar la cancelacion del chat " + asistenciasFinalizadasBean.getIdAsistencia());
+						Logger.getLogger(credenciales.getLogPath()).escribirLog(error.toString());
+					}
 					
 					CerrarAsistenciaRespBean respuesta = gson.fromJson(jsonRespuesta, CerrarAsistenciaRespBean.class);
 

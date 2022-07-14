@@ -59,8 +59,12 @@ public class MessageManager {
 				List<DetalleAsistenciaBean> mensajesEntidad = mensajesPorEntidad.get(entidad);
 				
 				ChatRequestBean request = new ChatRequestBean(mensajesEntidad);
-				String respuesta = 
-						connectionManager.callApi(conexion.getNroConexion(), request);
+				String respuesta = null;
+				try {
+					respuesta = connectionManager.callApi(conexion.getNroConexion(), request);
+				}catch (Exception e) {
+					Logger.getLogger(credenciales.getLogPath()).escribirLog("Error al enviar los mensajes a " + entidad,e);
+				}
 			
 				if(respuesta == null || respuesta.trim() == "") continue;
 				
